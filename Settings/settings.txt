@@ -1,0 +1,12 @@
+Message Rate:
+0.5
+Max Queue Length:
+20
+Max Workers:
+100
+Twitch Channel:
+
+YouTube ID:
+
+YouTube Stream URL:
+None
