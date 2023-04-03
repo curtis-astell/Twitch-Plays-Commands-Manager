@@ -1,0 +1,165 @@
+up
+*Press Key/w/2/
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+down
+*Press Key/s/2/
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+left
+*Press Key/a/2/
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+right
+*Press Key/d/2/
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+jump
+*Press Key/space/3/
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+whip
+*Press Key/q/2/
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+rope
+*Press Key/z/2/
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+left jump
+*Hold Key/space//
+*Press Key/a/3/
+*Release Key/space//
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+right jump
+*Hold Key/space//
+*Press Key/d/3/
+*Release Key/space//
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+crawl left
+*Hold Key/s//
+*Press Key/a/3/
+*Release Key/s//
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+crawl right
+*Hold Key/s//
+*Press Key/d/3/
+*Release Key/s//
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+bomb
+*Press Key/e/2/
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+place bomb
+*Hold Key/s//
+*Press Key/e/1/
+*Release Key/s//
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+yeet bomb
+*Hold Key/w//
+*Press Key/e/2/
+*Release Key/w//
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+door
+*Press Key/x/2/
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///
+*///

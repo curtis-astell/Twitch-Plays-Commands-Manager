@@ -1,0 +1,1 @@
+url(C:/Dev/TwitchPlays/Cover Art/zelda_lttp.png);
