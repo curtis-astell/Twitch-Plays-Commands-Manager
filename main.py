@@ -123,12 +123,13 @@ class LoginWindow(QDialog):
         splitter.addWidget(right_frame)
 
         # Initialize streaming_twitch variable
-        # Will be used to connect to stream
+        # Will be used to determine stream type
         self.streaming_twitch = None
 
     # Sets streaming_twitch variable to True and opens main window
     def twitch_login_clicked(self):
         self.streaming_twitch = True
+        # Adds items entered in LoginWindow to settings.txt for later
         with open("Settings/settings.txt", "r+") as f:
             lines = f.readlines()
 
@@ -147,6 +148,7 @@ class LoginWindow(QDialog):
     # Sets streaming_twitch variable to False and opens main window
     def youtube_login_clicked(self):
         self.streaming_twitch = False
+        # Adds items entered in LoginWindow to settings.txt for later
         with open("Settings/settings.txt", "r+") as f:
             lines = f.readlines()
 
@@ -255,9 +257,9 @@ class OptionsWindow(QDialog):
         except ValueError:
             return
 
-# TO DO: Need to properly pass streaming_twitch variable to this QDialog window
+# Opens window prompting user for a title before adding game to the grid
 class AddGameWindow(QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, streaming_twitch, parent=None):
         super().__init__(parent)
         main_layout = QVBoxLayout()
         self.setLayout(main_layout)
@@ -266,8 +268,9 @@ class AddGameWindow(QDialog):
 
         self.parent = parent
 
-        self.streaming_twitch = True
+        self.streaming_twitch = streaming_twitch
 
+        # Grabs settings from text file for the purposes of refreshing the MainWindow
         with open("Settings/settings.txt", 'r') as f:
             lines = f.readlines()
             self.twitch_channel = str(lines[7])
@@ -283,6 +286,7 @@ class AddGameWindow(QDialog):
         self.title_entry = QLineEdit()
         self.title_entry.setStyleSheet("background-color: white;")
         main_layout.addWidget(self.title_entry)
+        # Error label is empty and set to height 0 unless an error message is needed
         self.error_label = QLabel("")
         self.error_label.setStyleSheet("color: white;")
         self.error_label.setFixedHeight(0)
@@ -293,36 +297,47 @@ class AddGameWindow(QDialog):
 
         add_button.clicked.connect(self.add_button_clicked)
 
+    # Button adds new game to grid and creates necessary text files
     def add_button_clicked(self, new_title):
         self.new_title = self.title_entry.text()
         try:
-            assert self.new_title != "" and all(char not in self.new_title for char in "\\/:*?\"<>|")
+            # Game grid title can't have invalid characters because of file i/o
+            assert all(char not in self.new_title for char in "\\/:*?\"<>|")
             with open("Grid Info/game_grid", "r+") as f:
                 lines = f.readlines()
+                # Prevents user from adding duplicates of the same game
                 if self.new_title + "\n" in lines:
                     self.error_label.setText("Whoops! That title already exists!")
                     self.error_label.setFixedHeight(15)
                     return
                 else:
                     index = len(lines) + 1
+                    # Iterates over all items in grid_info.txt and adds the new title to the last unused line
                     try:
                         lines[index].write(self.new_title + "\n")
+                    # If no new line is available makes room for one
                     except IndexError:
                         lines.append(self.new_title + "\n")
                     f.seek(0)
                     f.writelines(lines)
+                # If the title entered is valid creates the following text files
                 with open("Grid Info/Game Commands/{} Commands List.txt".format(self.new_title), "w") as f:
                     f.write("Command1\n*///\n*///\n*///\n*///\n*///\n*///\n*///\n*///\n*///\n*///\n")
                 with open("Grid Info/{} Cover Art.txt".format(self.new_title), "w") as f:
                     f.write("url(C:/Dev/TwitchPlays/Cover Art/default_controller.png);")
-            self.updated_window = MainWindow(self.streaming_twitch, self.twitch_channel, self.youtube_id, self.youtube_url)
+
+            # Creates a new instance of the MainWindow class and closes the old one to display new information.
+            self.updated_window = MainWindow(self.streaming_twitch, self.twitch_channel,
+                                             self.youtube_id, self.youtube_url)
             self.parent.close()
             self.accept()
         except AssertionError:
+            # Error message in case of invalid characters
             self.error_label.setText("Invalid title, please try again.")
             self.error_label.setFixedHeight(15)
             pass
 
+# Prompts the user to enter a new title for a selected game
 class ChangeTitleWindow(QDialog):
     def __init__(self, game_title):
         super().__init__()
@@ -524,34 +539,6 @@ class CommandsWindow(QDialog):
                         item = QTableWidgetItem(cell_data)
                         self.commands_table.setItem(row, column + 1, item)
                     row += 1
-
-    # JSON file version, not currently working
-    # def load_table(self, game_title):
-    #    self.commands_table.clearContents()
-    #    for row in range(self.commands_table.rowCount()):
-    #        command_type_selection = QComboBox()
-    #        command_type_selection.addItems(["", "Press Key", "Hold Key", "Release Key", "Move Mouse"])
-    #        self.commands_table.setCellWidget(row, 0, command_type_selection)
-    #    selected_item = self.commands_list.currentItem()
-    #    if selected_item is None:
-    #        return
-    #    message = selected_item.text()
-    #    with open("Grid Info/{}.json".format(game_title), "r") as f:
-    #        data = json.load(f)
-    #        commands_list = data["commands_list"]
-    #        try:
-    #            command = next(item for item in commands_list if item['name'] == message)
-    #        except StopIteration:
-    #            pass
-    #        else:
-    #            for i, cmd_data in enumerate(command["data"]):
-    #                cmd_items = cmd_data.split("/")
-    #                command_type = cmd_items[0]
-    #                row_combobox = self.commands_table.cellWidget(i, 0)
-    #                row_combobox.setCurrentText(command_type)
-    #                for column, cell_data in enumerate(cmd_items[1:]):
-    #                    item = QTableWidgetItem(cell_data)
-    #                    self.commands_table.setItem(i, column + 1, item)
 
     # Save function to write modified commands to the commands text file for later
     def save_commands(self, game_title):
@@ -802,7 +789,6 @@ class MainWindow(QMainWindow):
 
         # Incorporating established variables from login window
         self.streaming_twitch = streaming_twitch
-        print(self.streaming_twitch)
         self.twitch_channel = twitch_channel
         self.youtube_id = youtube_id
         self.youtube_url = youtube_url
@@ -878,7 +864,7 @@ class MainWindow(QMainWindow):
         settings_dialog.exec_()
 
     def add_game(self):
-        add_dialog = AddGameWindow(self)
+        add_dialog = AddGameWindow(self.streaming_twitch, parent=self)
         add_dialog.exec_()
 
     def refresh_clicked(self):
@@ -994,7 +980,6 @@ class MainWindow(QMainWindow):
             delete_button.setFixedWidth(103)
             button_section.addWidget(delete_button)
 
-
             left_frame = QFrame()
             left_frame.setLayout(label_section)
             game_settings_splitter.addWidget(left_frame)
@@ -1002,8 +987,6 @@ class MainWindow(QMainWindow):
             right_frame = QFrame()
             right_frame.setLayout(button_section)
             game_settings_splitter.addWidget(right_frame)
-
-            print("Added {} at row {}, column {}".format(game_title, row + 1, col))
 
             game.clicked.connect(partial(self.game_clicked, game_title, game.game_settings, game_settings_animation))
             change_title.clicked.connect(partial(self.change_title_clicked, game_title))
@@ -1021,7 +1004,6 @@ class MainWindow(QMainWindow):
 
     @staticmethod
     def game_clicked(title, settings, game_settings_animation):
-        print("Clicked {}".format(title))
         if settings.maximumHeight() == 0:
             # settings.show()
             game_settings_animation.setStartValue(0)
@@ -1044,7 +1026,6 @@ class MainWindow(QMainWindow):
                                                    options=options)
         if not file_name:
             return
-        print(file_name)
         with open("Grid Info/{} cover art.txt".format(title), "w") as f:
             f.write("url({});".format(file_name))
         with open("Grid Info/{} cover art.txt".format(title), "r") as f:
@@ -1054,7 +1035,6 @@ class MainWindow(QMainWindow):
     @staticmethod
     def commands_clicked(game_title):
         commands_dialog = CommandsWindow(game_title)
-        print("Opened {} command manager".format(game_title))
         commands_dialog.exec_()
 
     def connect_clicked(self, game_title):
