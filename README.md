@@ -41,7 +41,7 @@ and show you how to get started.
       - "Release Key", which releases the key listed under "Keystroke". This is useful for letting go of a held key.
       - "Move Mouse", which moves the mouse. Under "Direction" you can write "up", "down", "left", or "right". The mouse will be moved the amount of pixels listed under the "Duration" column.
 
-  For an example of more complex commands, open up the Commands Manager for Grand Theft Auto V or Spelunky 2.
+  A list of all the keycodes will be at the end of this guide.
 
 * Stream Link Window:
   
@@ -54,3 +54,40 @@ and show you how to get started.
   * Message Rate: This controls how fast we process incoming Twitch Chat messages. It's the number of seconds it will take to handle all messages in the queue. Twitch delivers messages in "batches", rather than one at a time, so we process the messages over duration of "Message Rate", rather than processing the entire batch at once. Keep in mind that a smaller number means we go through the message queue faster, but we will run out of messages faster and activity might "stagnate" while waiting for a new batch. A higher number means we go through the queue slower, and messages are more evenly spread out, but delay from the viewers' perspective is higher. Setting this to 0 will disable the queue and handle all messages immediately. However, the wait for another batch of messages is far more pronounced.
   * Max Queue Length: This limits the number of commands that will be processed in the previously mentioned "batch" of messages. Lowering this value is helpful for games where too many inputs would hinder gameplay. Raising this value is good for creating total chaos.
   * Max Workers: This is the maximum number of threads you can process at a time.
+
+* Keycodes:
+
+  For a keystroke to be valid it has to be written out in the proper formatting. It's worth noting that none of the keystrokes in this program are case sensitive.
+  Here is a list:
+
+    - Alphabetical: Can be written out as is. For example, "A" or "W" and so on.
+    - Arrow Keys: Left_Arrow, Right_Arrow, Up_Arrow, Down_Arrow
+    - Numbers: Need to be spelled out. "Four" is valid, "4" is not.
+    - F Keys: Written out as is. For example, "F1" or "F5" and so on.
+    - Numpad: "Numpad_" followed by the key name. For example, "Numpad_0" or "Numpad_Enter". Keys like + or - need to be written as "Numpad_Plus" and "Numpad_Minus".
+    - Mouse: Left_Mouse, Right_Mouse, Middle_Mouse for your clicks. Mouse_Wheel_Up and Mouse_Wheel_Down for your scroll wheel.
+    
+    - Miscellaneous/Special Characters:
+      - MINUS
+      - EQUALS
+      - BACKSPACE
+      - APOSTROPHE
+      - SEMICOLON
+      - TAB
+      - CAPSLOCK
+      - ENTER
+      - LEFT_CONTROL
+      - LEFT_ALT
+      - LEFT_SHIFT
+      - RIGHT_SHIFT
+      - TILDE
+      - PRINTSCREEN
+      - NUM_LOCK
+      - SPACE
+      - DELETE
+      - COMMA
+      - PERIOD
+      - BACKSLASH
+      - FORWARDSLASH
+      - LEFT_BRACKET
+      - RIGHT_BRACKET
